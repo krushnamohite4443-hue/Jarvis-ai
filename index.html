@@ -68,15 +68,32 @@ mic.onclick=()=>{
   return;
  }
  const recognition=new Recognition();
- recognition.lang="mr-IN";
- recognition.interimResults=false;
- status.textContent="LISTENING...";
- result.textContent="बोला बॉस...";
- recognition.onresult=(event)=>{
-  result.textContent="तुम्ही म्हणालात: "+
-   event.results[0][0].transcript;
-  status.textContent="VOICE RECEIVED";
- };
+   recognition.lang = "hi-IN";
+    recognition.interimResults = false;
+    status.textContent = "LISTENING...";
+    result.textContent = "बोला बॉस...";
+    recognition.onresult = async (event) => {
+      const userText = event.results[0][0].transcript;
+      result.textContent = "तुम्ही म्हणालात: " + userText;
+      status.textContent = "THINKING...";
+      try {
+        const res = await fetch("https://workers.dev", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText, prompt: userText, text: userText })
+        });
+        const data = await res.json();
+        const aiReply = data.reply || data.response || data.answer || data.text || data.output || JSON.stringify(data);
+        result.textContent = aiReply;
+        status.textContent = "AI BRAIN CONNECTED";
+        const speech = new SpeechSynthesisUtterance(aiReply);
+        speech.lang = "hi-IN";
+        window.speechSynthesis.speak(speech);
+      } catch (e) {
+        result.textContent = "सर्व्हर एरर बॉस: " + e.message;
+        status.textContent = "CONNECTION ERROR";
+      }
+    };
  recognition.onerror=()=>{
   status.textContent="VOICE ERROR";
   result.textContent="मायक्रोफोन परवानगी आणि इंटरनेट तपासा.";
