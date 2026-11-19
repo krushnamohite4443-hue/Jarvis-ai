@@ -77,7 +77,7 @@ mic.onclick=()=>{
       result.textContent = "तुम्ही म्हणालात: " + userText;
       status.textContent = "THINKING...";
       try {
-        const res = await fetch("https://workers.dev", {
+       const res = await fetch("https://workers.dev", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: userText, prompt: userText, text: userText })
