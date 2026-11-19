@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050b18">
+<title>JARVIS AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#050b18;color:#e8f4ff;
+ font-family:Arial,sans-serif;min-height:100vh;
+ display:flex;align-items:center;justify-content:center;
+ padding:20px;text-align:center
+}
+.app{width:100%;max-width:450px}
+h1{letter-spacing:7px;color:#39c8ff;font-size:38px}
+.sub{color:#8baac5}
+.core{
+ width:190px;height:190px;border-radius:50%;
+ margin:45px auto;border:2px solid #19bfff;
+ box-shadow:0 0 25px #087bba,inset 0 0 30px #087bba;
+ display:grid;place-items:center;
+ animation:pulse 2s infinite
+}
+.core span{font-size:65px;color:#45d5ff}
+@keyframes pulse{
+ 50%{box-shadow:0 0 45px #19bfff,inset 0 0 45px #087bba}
+}
+button{
+ background:#087dbb;color:white;border:1px solid #35caff;
+ padding:17px 30px;border-radius:30px;
+ font-size:17px;margin:8px
+}
+button:active{transform:scale(.96)}
+#status{color:#47d5ff;margin:20px}
+#result{
+ background:#101d30;border-radius:15px;
+ padding:18px;min-height:65px;overflow-wrap:anywhere
+}
+small{color:#8298ae}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>J.A.R.V.I.S</h1>
+<p class="sub">PERSONAL AI ASSISTANT</p>
+<div class="core"><span>◈</span></div>
+<h3 id="status">SYSTEM READY</h3>
+<button id="mic">🎙️ TALK TO JARVIS</button>
+<div id="result">नमस्कार बॉस! मी तयार आहे.</div>
+<br><br>
+<small>VOICE INPUT TEST · AI BRAIN NOT CONNECTED YET</small>
+</div>
+<script>
+const status=document.getElementById("status");
+const result=document.getElementById("result");
+const mic=document.getElementById("mic");
+
+const Recognition=window.SpeechRecognition ||
+ window.webkitSpeechRecognition;
+
+mic.onclick=()=>{
+ if(!Recognition){
+  status.textContent="VOICE NOT SUPPORTED";
+  result.textContent="या ब्राउझरमध्ये Voice Recognition उपलब्ध नाही.";
+  return;
+ }
+ const recognition=new Recognition();
+ recognition.lang="mr-IN";
+ recognition.interimResults=false;
+ status.textContent="LISTENING...";
+ result.textContent="बोला बॉस...";
+ recognition.onresult=(event)=>{
+  result.textContent="तुम्ही म्हणालात: "+
+   event.results[0][0].transcript;
+  status.textContent="VOICE RECEIVED";
+ };
+ recognition.onerror=()=>{
+  status.textContent="VOICE ERROR";
+  result.textContent="मायक्रोफोन परवानगी आणि इंटरनेट तपासा.";
+ };
+ recognition.onend=()=>{
+  if(status.textContent==="LISTENING...")
+   status.textContent="SYSTEM READY";
+ };
+ recognition.start();
+};
+</script>
+</body>
+</html>
